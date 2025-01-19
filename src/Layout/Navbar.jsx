@@ -4,7 +4,10 @@ import { Authcontext } from '../Provider/Authprovider';
 import useAuth from '../Hooks/UseAuth';
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user, logOut } = useAuth();
+  const losgoutclick = () => {
+    logOut();
+  }
   const links = <>
     <li><NavLink to={`/login`}>login</NavLink></li>
     <li><NavLink to={`/registration`}>Registration</NavLink></li>
@@ -47,7 +50,7 @@ const Navbar = () => {
       user?.email &&
       <p>{user.email}</p>
     }
-        <a className="btn">Button</a>
+        <a onClick={losgoutclick} className="btn">Logout</a>
       </div>
     </div>
   );

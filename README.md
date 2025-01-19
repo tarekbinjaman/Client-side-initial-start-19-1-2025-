@@ -297,3 +297,39 @@ And this is how you will use
 ```
 const { user, setUser, signIn } = useAuth();
 ```
+
+# From here JWT Process Start
+
+In Authprovider you have to put jwt path in useEffect like this
+```
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, currentUser => {
+            setUser(currentUser);
+            console.log('state captured', currentUser?.email)
+            // one
+            if(currentUser?.email) {
+                const user = { email: currentUser.email };
+                axios.post('http://localhost:5000/jwt', user, { withCredentials: true })
+                .then(res => {
+                    console.log('Login token', res.data)
+                    setLoading(false)
+                })
+                .catch(err => console.error('Error generating token', err));
+            }
+
+            // two
+            else {
+                axios.post('http://localhost:5000/logout', {}, {withCredentials: true})
+                .then( res => {
+                    console.log('Logout token cleared', res.data)
+                    setLoading(false)
+                })
+                .catch( err => console.error('Error clearing token:', err));
+            }
+        });
+        // three
+        return () => { unsubscribe()};
+    }, [])
+```
+
+then check the token is successfully adding and removing process working or not.

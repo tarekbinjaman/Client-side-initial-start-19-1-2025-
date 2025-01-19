@@ -1,7 +1,8 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { auth } from '../../firebase.init';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 import AuthContext from './Authcontext';
+import axios from 'axios';
 
 export const Authcontext = createContext();
 
@@ -37,9 +38,36 @@ const Authprovider = ({children}) => {
         logOut,
         googleSignin
     }
-    // return <Authcontext.Provider value={authInfo}>
-    //     {children}
-    // </Authcontext.Provider>
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, currentUser => {
+            setUser(currentUser);
+            console.log('state captured', currentUser?.email)
+            // one
+            if(currentUser?.email) {
+                const user = { email: currentUser.email };
+                axios.post('http://localhost:5000/jwt', user, { withCredentials: true })
+                .then(res => {
+                    console.log('Login token', res.data)
+                    setLoading(false)
+                })
+                .catch(err => console.error('Error generating token', err));
+            }
+
+            // two
+            else {
+                axios.post('http://localhost:5000/logout', {}, {withCredentials: true})
+                .then( res => {
+                    console.log('Logout token cleared', res.data)
+                    setLoading(false)
+                })
+                .catch( err => console.error('Error clearing token:', err));
+            }
+        });
+        // three
+        return () => { unsubscribe()};
+    }, [])
+
     return (
         <AuthContext.Provider value={authInfo}>
             {children}
