@@ -333,3 +333,18 @@ In Authprovider you have to put jwt path in useEffect like this
 ```
 
 then check the token is successfully adding and removing process working or not.
+
+# Verify token client side setup
+In previous step token was stored in cookie then after logout cookie also removed.
+Now the process we are going to do it is token verify and data load process here it is
+
+```
+        {
+            path: 'services',
+            element: <Services></Services>,
+            loader: () => fetch('http://localhost:5000/services', {credentials: 'include'})
+        }
+```
+
+in the server side we have put verifytoken in this route so We have to set {credentials: 'include'}
+Be careful! sometime you might write {withcredentials: true} it will make verifytoken process in trouble.
