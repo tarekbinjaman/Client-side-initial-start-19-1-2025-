@@ -348,3 +348,40 @@ Now the process we are going to do it is token verify and data load process here
 
 in the server side we have put verifytoken in this route so We have to set {credentials: 'include'}
 Be careful! sometime you might write {withcredentials: true} it will make verifytoken process in trouble.
+
+# useAxiosSecure
+
+step - 1
+create a file name 
+
+useAxiosSecure.jsx
+```
+import axios from 'axios';
+import React from 'react';
+
+const axiosInstance = axios.create({
+    baseURL: `http://localhost:5000`,
+    withCredentials: true
+})
+const useAxiosSecure = () => {
+    return axiosInstance;
+
+};
+
+export default useAxiosSecure;
+```
+
+step - 2
+
+To load data use useEffect instade of loader in router
+here is demo how to use 
+
+```
+    const [services, setServices] = useState([]);
+    const axiosSecure = useAxiosSecure();
+    useEffect(() => {
+        // axios.get(`http://localhost:5000/services`, {withCredentials: true})
+        axiosSecure.get('/services')
+        .then(res => setServices(res.data))
+    }, [])
+```
