@@ -1,4 +1,4 @@
-# Client side 
+# Client side - (full jwt process included) and client side setup
 
 # Install pacakges
 
